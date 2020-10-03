@@ -7,6 +7,7 @@
     "test": "test"
   },
   "scripts": {
+    "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -18,5 +19,19 @@
   "bugs": {
     "url": "https://github.com/ellsclytn/github-label-sync/issues"
   },
-  "homepage": "https://github.com/ellsclytn/github-label-sync#readme"
+  "homepage": "https://github.com/ellsclytn/github-label-sync#readme",
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.63",
+    "@types/node": "^14.11.2",
+    "@typescript-eslint/eslint-plugin": "^2.34.0",
+    "eslint": "^6.8.0",
+    "eslint-config-standard": "^14.1.1",
+    "eslint-config-standard-react": "^9.2.0",
+    "eslint-config-standard-with-typescript": "^15.0.1",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
+    "typescript": "^4.0.3"
+  }
 }
