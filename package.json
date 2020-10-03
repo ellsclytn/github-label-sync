@@ -1,0 +1,22 @@
+{
+  "name": "github-label-sync",
+  "version": "1.0.0",
+  "description": "A Serverless application to synchronize GitHub Labels between Organization repos",
+  "main": "dist/index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/ellsclytn/github-label-sync.git"
+  },
+  "author": "Ellis Clayton",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ellsclytn/github-label-sync/issues"
+  },
+  "homepage": "https://github.com/ellsclytn/github-label-sync#readme"
+}
