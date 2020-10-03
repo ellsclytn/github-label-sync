@@ -16,6 +16,9 @@ service: github-label-sync
 #app: your-app-name
 #org: your-org-name
 
+plugins:
+  - serverless-offline
+
 # You can pin your service to only deploy with a specific Serverless version
 # Check out our docs for more details
 frameworkVersion: '2'
