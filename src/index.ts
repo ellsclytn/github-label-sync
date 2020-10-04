@@ -6,6 +6,7 @@ import {
 import { Webhooks } from '@octokit/webhooks'
 import { respond, respondWithError } from './responders'
 import { validateRequest } from './validation'
+import { createWebhookListeners } from './listeners'
 
 const { WEBHOOK_SECRET: secret } = process.env
 
@@ -30,14 +31,9 @@ const parseRequest = async (
    *  Also it's a slightly annoying trick to deal with the fact that
    *  webhooks.js is a bit more tailored toward a callback world vs. Promises
    */
-  const webhookListener = new Promise<APIGatewayProxyResult>((resolve) => {
-    webhooks.on('label', (webhook) => {
-      // TODO: Write the webhook handler
-      console.log(webhook?.payload?.action)
-
-      return resolve(respond({ status: 'OK' }))
-    })
-  })
+  const webhookListener = new Promise<APIGatewayProxyResult>(
+    createWebhookListeners(webhooks)
+  )
 
   await webhooks.receive({
     id: event.headers['x-github-delivery'],
