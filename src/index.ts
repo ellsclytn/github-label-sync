@@ -4,7 +4,7 @@ import {
   APIGatewayProxyResult
 } from 'aws-lambda'
 import { Webhooks } from '@octokit/webhooks'
-import { respond, respondWithError } from './respond'
+import { respond, respondWithError } from './responders'
 import { validateRequest } from './validation'
 
 const { WEBHOOK_SECRET: secret } = process.env

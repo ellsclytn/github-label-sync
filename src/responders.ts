@@ -8,8 +8,8 @@ export function respond (payload: any, statusCode = 200): APIGatewayProxyResult 
   }
 }
 
-/** Format an error as a Response. Handles known error types, and obfuscates
- *  to a generic response in all other cases.
+/** Format an error as an APIGatewayProxyResult. Handles known error types, and
+ *  obfuscates to a generic response in all other cases.
  */
 export function respondWithError (error: Error): APIGatewayProxyResult {
   if (error instanceof RequestError) {
