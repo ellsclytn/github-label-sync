@@ -39,9 +39,7 @@ const parseRequest = async (
     })
   })
 
-  /* Our app has a parent error handler that we want all errors to go to */
-  /* eslint-disable-next-line @typescript-eslint/no-floating-promises */
-  webhooks.receive({
+  await webhooks.receive({
     id: event.headers['x-github-delivery'],
     name: event.headers['x-github-event'],
     payload: body
