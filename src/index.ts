@@ -24,20 +24,30 @@ const parseRequest = async (
   const body = JSON.parse(event.body)
   validateRequest(event, body, webhooks)
 
-  webhooks.on('label', (webhook) => {
-    // TODO: Write the webhook handler
-    console.log(webhook?.payload?.action)
+  /** The event listeners for various webhook types, wrapped as a Promise.
+   *  Resolves whenever the first event listener finishes executing its logic.
+   *
+   *  Also it's a slightly annoying trick to deal with the fact that
+   *  webhooks.js is a bit more tailored toward a callback world vs. Promises
+   */
+  const webhookListener = new Promise<APIGatewayProxyResult>((resolve) => {
+    webhooks.on('label', (webhook) => {
+      // TODO: Write the webhook handler
+      console.log(webhook?.payload?.action)
+
+      return resolve(respond({ status: 'OK' }))
+    })
   })
 
   /* Our app has a parent error handler that we want all errors to go to */
   /* eslint-disable-next-line @typescript-eslint/no-floating-promises */
-  await webhooks.receive({
+  webhooks.receive({
     id: event.headers['x-github-delivery'],
     name: event.headers['x-github-event'],
     payload: body
   })
 
-  return respond({ status: 'OK' })
+  return await webhookListener
 }
 
 export const handler: APIGatewayProxyHandler = async (event) => {
