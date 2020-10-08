@@ -4,7 +4,7 @@ import {
   APIGatewayProxyResult
 } from 'aws-lambda'
 import { Webhooks } from '@octokit/webhooks'
-import { createWebhookListeners } from '../listeners'
+import { createWebhookListeners } from '../webhook-listeners'
 import { respond, respondWithError } from '../responders'
 import { validateRequest } from '../validation'
 

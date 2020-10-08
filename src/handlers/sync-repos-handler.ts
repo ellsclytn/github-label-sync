@@ -1,6 +1,6 @@
 import { Handler } from 'aws-lambda'
 import { LabelChangeset, updateLabels } from '../github/update-labels'
-import { WebhookPayloadLabel } from '../listeners/label'
+import { WebhookPayloadLabel } from '../webhook-listeners/label'
 import { getLabelsMatching } from '../github/get-labels-matching'
 
 type SyncReposHandler = Handler<WebhookPayloadLabel>;
