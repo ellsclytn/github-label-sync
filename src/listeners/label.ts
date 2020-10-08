@@ -2,6 +2,7 @@ import { EventPayloads } from '@octokit/webhooks'
 import { LabelChangeset, updateLabels } from '../github/update-labels'
 import { WebhookListener } from '.'
 import { getLabelsMatching } from '../github/get-labels-matching'
+import { lambda } from '../lambda'
 
 interface LabelPropertyChange {
   /** The property value prior to the change being applied */
@@ -19,7 +20,7 @@ interface LabelChanges {
  *  they are quite present in the real Webhook payload. So this is an override
  *  to better match reality.
  */
-interface WebhookPayloadLabel
+export interface WebhookPayloadLabel
   extends Omit<EventPayloads.WebhookPayloadLabel, 'changes'> {
   changes?: LabelChanges
   label: EventPayloads.WebhookPayloadLabelLabel & {
@@ -34,25 +35,18 @@ export const createLabelListener: LabelWebhookListener = (
   respond
 ) => {
   webhooks.on('label', async (webhook) => {
-    const { changes, label } = webhook.payload
+    /* Mutations are slow, and GitHub only gives
+     * us 10 seconds before a webhook is considered to have timed out. So we
+     * just do the real work in a separate lambda and return HTTP 204.
+     */
+    await lambda
+      .invoke({
+        FunctionName: 'github-label-sync-dev-syncRepos',
+        InvocationType: 'Event',
+        Payload: JSON.stringify(webhook.payload)
+      })
+      .promise()
 
-    if (typeof changes !== 'undefined') {
-      const name: string = changes.name?.from ?? label.name
-      const labels = await getLabelsMatching(name)
-
-      const labelChanges: LabelChangeset = {
-        name: label.name,
-        color: label.color,
-        description: label.description
-      }
-
-      /* TODO: Defer this to an async lambda function, and give HTTP 202 in the
-       * original response. Because mutations are slow, and GitHub only gives
-       * us 10 seconds before a webhook is considered to have timed out.
-       */
-      await updateLabels(labels, labelChanges)
-    }
-
-    respond({ status: 'OK' })
+    respond({ status: 'ACCEPTED' }, 204)
   })
 }

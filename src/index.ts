@@ -1,12 +1,16 @@
 import {
   APIGatewayProxyEvent,
   APIGatewayProxyHandler,
-  APIGatewayProxyResult
+  APIGatewayProxyResult,
+  Handler
 } from 'aws-lambda'
+import { LabelChangeset, updateLabels } from './github/update-labels'
+import { WebhookPayloadLabel } from './listeners/label'
 import { Webhooks } from '@octokit/webhooks'
+import { createWebhookListeners } from './listeners'
+import { getLabelsMatching } from './github/get-labels-matching'
 import { respond, respondWithError } from './responders'
 import { validateRequest } from './validation'
-import { createWebhookListeners } from './listeners'
 
 const { WEBHOOK_SECRET: secret } = process.env
 
@@ -51,5 +55,22 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     console.dir(e)
 
     return respondWithError(e)
+  }
+}
+
+type SyncReposHandler = Handler<WebhookPayloadLabel>;
+
+export const syncRepos: SyncReposHandler = async ({ changes, label }) => {
+  if (typeof changes !== 'undefined') {
+    const name: string = changes.name?.from ?? label.name
+    const labels = await getLabelsMatching(name)
+
+    const labelChanges: LabelChangeset = {
+      name: label.name,
+      color: label.color,
+      description: label.description
+    }
+
+    await updateLabels(labels, labelChanges)
   }
 }
