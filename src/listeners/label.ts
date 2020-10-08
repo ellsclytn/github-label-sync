@@ -1,21 +1,58 @@
 import { EventPayloads } from '@octokit/webhooks'
+import { LabelChangeset, updateLabels } from '../github/update-labels'
 import { WebhookListener } from '.'
-import { getRepositories } from '../github/get-repositories'
+import { getLabelsMatching } from '../github/get-labels-matching'
 
-type LabelWebhookListener = WebhookListener<EventPayloads.WebhookPayloadLabel>;
+interface LabelPropertyChange {
+  /** The property value prior to the change being applied */
+  from: string
+}
+
+interface LabelChanges {
+  name?: LabelPropertyChange
+  color?: LabelPropertyChange
+  description?: LabelPropertyChange
+}
+
+/** octokit/webhooks definition of a WebhookPayloadLabel is incomplete, with
+ *  the "name" and "description" being completely unknown to it, even though
+ *  they are quite present in the real Webhook payload. So this is an override
+ *  to better match reality.
+ */
+interface WebhookPayloadLabel
+  extends Omit<EventPayloads.WebhookPayloadLabel, 'changes'> {
+  changes?: LabelChanges
+  label: EventPayloads.WebhookPayloadLabelLabel & {
+    description?: string
+  }
+}
+
+type LabelWebhookListener = WebhookListener<WebhookPayloadLabel>;
 
 export const createLabelListener: LabelWebhookListener = (
   webhooks,
   respond
 ) => {
   webhooks.on('label', async (webhook) => {
-    // TODO: Write the webhook handler
-    console.log(webhook.payload.action)
+    const { changes, label } = webhook.payload
 
-    const stuff = await getRepositories()
+    if (typeof changes !== 'undefined') {
+      const name: string = changes.name?.from ?? label.name
+      const labels = await getLabelsMatching(name)
 
-    console.log(stuff)
+      const labelChanges: LabelChangeset = {
+        name: label.name,
+        color: label.color,
+        description: label.description
+      }
 
-    return respond({ status: 'OK' })
+      /* TODO: Defer this to an async lambda function, and give HTTP 202 in the
+       * original response. Because mutations are slow, and GitHub only gives
+       * us 10 seconds before a webhook is considered to have timed out.
+       */
+      await updateLabels(labels, labelChanges)
+    }
+
+    respond({ status: 'OK' })
   })
 }

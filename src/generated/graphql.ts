@@ -18749,3 +18749,31 @@ export type ViewerHovercardContext = HovercardContext & {
   /** Identifies the user who is related to this context. */
   readonly viewer: User;
 };
+
+
+export type GetLabelsMatchingQueryVariables = Exact<{
+  after: Maybe<Scalars['String']>;
+  org: Scalars['String'];
+  label: Scalars['String'];
+}>;
+
+
+export type GetLabelsMatchingQuery = (
+  { readonly __typename?: 'Query' }
+  & { readonly organization: Maybe<(
+    { readonly __typename?: 'Organization' }
+    & { readonly repositories: (
+      { readonly __typename?: 'RepositoryConnection' }
+      & { readonly nodes: Maybe<ReadonlyArray<Maybe<(
+        { readonly __typename?: 'Repository' }
+        & { readonly label: Maybe<(
+          { readonly __typename?: 'Label' }
+          & Pick<Label, 'id'>
+        )> }
+      )>>>, readonly pageInfo: (
+        { readonly __typename?: 'PageInfo' }
+        & Pick<PageInfo, 'endCursor' | 'hasNextPage'>
+      ) }
+    ) }
+  )> }
+);
