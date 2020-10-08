@@ -8,7 +8,8 @@
   },
   "scripts": {
     "build": "tsc",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "graphql:types:build": "graphql-codegen"
   },
   "repository": {
     "type": "git",
@@ -21,6 +22,9 @@
   },
   "homepage": "https://github.com/ellsclytn/github-label-sync#readme",
   "devDependencies": {
+    "@graphql-codegen/cli": "1.17.10",
+    "@graphql-codegen/typescript": "1.17.10",
+    "@graphql-codegen/typescript-operations": "1.17.8",
     "@types/aws-lambda": "^8.10.63",
     "@types/node": "^14.11.2",
     "@typescript-eslint/eslint-plugin": "^2.34.0",
