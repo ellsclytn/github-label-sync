@@ -48,6 +48,8 @@ export const handler: APIGatewayProxyHandler = async (event) => {
   try {
     return await parseRequest(event)
   } catch (e) {
+    console.dir(e)
+
     return respondWithError(e)
   }
 }
