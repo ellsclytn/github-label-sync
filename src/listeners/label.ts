@@ -1,8 +1,6 @@
 import { EventPayloads } from '@octokit/webhooks'
-import { LabelChangeset, updateLabels } from '../github/update-labels'
 import { WebhookListener } from '.'
-import { getLabelsMatching } from '../github/get-labels-matching'
-import { lambda } from '../lambda'
+import { lambda } from '../handlers/lambda'
 
 interface LabelPropertyChange {
   /** The property value prior to the change being applied */
