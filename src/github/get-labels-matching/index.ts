@@ -13,7 +13,6 @@ export const getLabelsMatching = async (
   after: string | null = null
 ): Promise<string[]> => {
   const variables: GetLabelsMatchingQueryVariables = {
-    // Request client triggers an error if the org isn't defined
     org: githubOrg,
     after,
     label
