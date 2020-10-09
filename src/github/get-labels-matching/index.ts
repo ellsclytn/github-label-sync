@@ -1,11 +1,10 @@
-import { query } from './query'
-import { requestClient } from '../request-client'
 import {
   GetLabelsMatchingQuery,
   GetLabelsMatchingQueryVariables
 } from '../../generated/graphql'
-
-const { GITHUB_ORGANIZATION: org } = process.env
+import { query } from './query'
+import { requestClient } from '../request-client'
+import { githubOrg } from '../../environment'
 
 /** Returns label IDs throughout the Org matching a string */
 export const getLabelsMatching = async (
@@ -15,7 +14,7 @@ export const getLabelsMatching = async (
 ): Promise<string[]> => {
   const variables: GetLabelsMatchingQueryVariables = {
     // Request client triggers an error if the org isn't defined
-    org: org as string,
+    org: githubOrg,
     after,
     label
   }

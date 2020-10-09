@@ -1,6 +1,5 @@
 import { Lambda } from 'aws-sdk'
-
-const isOffline = process.env.IS_OFFLINE === 'true'
+import { isOffline } from '../environment'
 
 const params: Lambda.ClientConfiguration = {
   apiVersion: '2031',

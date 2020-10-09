@@ -1,10 +1,6 @@
 import { GraphQLClient } from 'graphql-request'
 import { Headers } from 'cross-fetch'
-
-const { GITHUB_ORGANIZATION: org, GITHUB_API_TOKEN: token } = process.env
-if (typeof org !== 'string' || typeof token !== 'string') {
-  throw new Error('Environment variables missing')
-}
+import { githubApiToken } from '../environment'
 
 const GRAPHQL_URL = 'https://api.github.com/graphql'
 
@@ -16,7 +12,7 @@ global.Headers = global.Headers || Headers
 
 export const requestClient = new GraphQLClient(GRAPHQL_URL, {
   headers: {
-    authorization: `Bearer ${token}`,
+    authorization: `Bearer ${githubApiToken}`,
     /** Required for Labels API in GraphQL
      *  https://docs.github.com/en/free-pro-team@latest/graphql/overview/schema-previews#labels-preview
      */

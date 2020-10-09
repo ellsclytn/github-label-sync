@@ -7,14 +7,9 @@ import { Webhooks } from '@octokit/webhooks'
 import { createWebhookListeners } from '../webhook-listeners'
 import { respond, respondWithError } from '../responders'
 import { validateRequest } from '../validation'
+import { webhookSecret } from '../environment'
 
-const { WEBHOOK_SECRET: secret } = process.env
-
-if (typeof secret !== 'string') {
-  throw new Error('Environment variables missing')
-}
-
-const webhooks = new Webhooks({ secret })
+const webhooks = new Webhooks({ secret: webhookSecret })
 
 const parseRequest = async (
   event: APIGatewayProxyEvent

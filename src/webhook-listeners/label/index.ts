@@ -1,5 +1,6 @@
 import { LabelWebhookListener } from './types'
 import { lambda } from '../../handlers/lambda'
+import { repoSyncFunctionName } from '../../environment'
 
 export const createLabelListener: LabelWebhookListener = (
   webhooks,
@@ -12,7 +13,7 @@ export const createLabelListener: LabelWebhookListener = (
      */
     await lambda
       .invoke({
-        FunctionName: 'github-label-sync-dev-syncRepos',
+        FunctionName: repoSyncFunctionName,
         InvocationType: 'Event',
         Payload: JSON.stringify(webhook.payload)
       })
