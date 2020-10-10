@@ -17,7 +17,7 @@ export function validateRequest (
     })
   }
 
-  const isVerified = webhooks.verify(body, event.headers['x-hub-signature'])
+  const isVerified = webhooks.verify(body, event.headers['X-Hub-Signature'])
   if (!isVerified) {
     throw new RequestError('Signature invalid', { code: 400 })
   }

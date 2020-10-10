@@ -31,8 +31,8 @@ const parseRequest = async (
   )
 
   await webhooks.receive({
-    id: event.headers['x-github-delivery'],
-    name: event.headers['x-github-event'],
+    id: event.headers['X-GitHub-Delivery'],
+    name: event.headers['X-GitHub-Event'],
     payload: body
   })
 

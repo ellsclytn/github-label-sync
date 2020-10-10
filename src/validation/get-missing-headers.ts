@@ -1,7 +1,7 @@
 const WEBHOOK_HEADERS = [
-  'x-github-event',
-  'x-hub-signature',
-  'x-github-delivery'
+  'X-GitHub-Event',
+  'X-Hub-Signature',
+  'X-GitHub-Delivery'
 ]
 
 /** Returns names of headers which are required to be considered a GitHub
