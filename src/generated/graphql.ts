@@ -18751,6 +18751,23 @@ export type ViewerHovercardContext = HovercardContext & {
 };
 
 
+export type CreateLabelsMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type CreateLabelsMutation = (
+  { readonly __typename?: 'Mutation' }
+  & { readonly labelCreate1: Maybe<(
+    { readonly __typename?: 'CreateLabelPayload' }
+    & { readonly label: Maybe<(
+      { readonly __typename: 'Label' }
+      & { readonly repository: (
+        { readonly __typename: 'Repository' }
+        & Pick<Repository, 'name'>
+      ) }
+    )> }
+  )> }
+);
+
 export type GetLabelsMatchingQueryVariables = Exact<{
   after: Maybe<Scalars['String']>;
   org: Scalars['String'];
@@ -18770,6 +18787,29 @@ export type GetLabelsMatchingQuery = (
           { readonly __typename?: 'Label' }
           & Pick<Label, 'id'>
         )> }
+      )>>>, readonly pageInfo: (
+        { readonly __typename?: 'PageInfo' }
+        & Pick<PageInfo, 'endCursor' | 'hasNextPage'>
+      ) }
+    ) }
+  )> }
+);
+
+export type GetRepositoriesQueryVariables = Exact<{
+  after: Maybe<Scalars['String']>;
+  org: Scalars['String'];
+}>;
+
+
+export type GetRepositoriesQuery = (
+  { readonly __typename?: 'Query' }
+  & { readonly organization: Maybe<(
+    { readonly __typename?: 'Organization' }
+    & { readonly repositories: (
+      { readonly __typename?: 'RepositoryConnection' }
+      & { readonly nodes: Maybe<ReadonlyArray<Maybe<(
+        { readonly __typename?: 'Repository' }
+        & Pick<Repository, 'id'>
       )>>>, readonly pageInfo: (
         { readonly __typename?: 'PageInfo' }
         & Pick<PageInfo, 'endCursor' | 'hasNextPage'>
