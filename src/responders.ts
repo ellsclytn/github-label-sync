@@ -1,5 +1,6 @@
 import { APIGatewayProxyResult } from 'aws-lambda'
 import { RequestError } from './errors'
+import { LockError } from './state/errors'
 
 export type AsyncResponder = (payload: any, statusCode?: number) => void;
 

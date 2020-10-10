@@ -5,6 +5,7 @@ import { createLabels } from '../github/create-labels'
 import { deleteLabels } from '../github/delete-labels'
 import { getLabelsMatching } from '../github/get-labels-matching'
 import { getRepositories } from '../github/get-repositories'
+import { lockLabel, unlockLabel } from '../state/lock'
 
 type SyncReposHandler = Handler<WebhookPayloadLabel>;
 
@@ -16,6 +17,18 @@ export const syncReposHandler: SyncReposHandler = async ({
 }) => {
   if (typeof changes !== 'undefined') {
     const name: string = changes.name?.from ?? label.name
+    /* Editing a label name is special, because we need to lock both the
+     * original, and the new name. The new name gets locked when the
+     * webhook is received, while we do the old label name locking here.
+     *
+     * Additionally, we still await this lock just so we can bail out in the
+     * unlikely event that another transaction involving the old label name is
+     * already underway.
+     */
+    if (typeof changes.name?.from === 'string') {
+      await lockLabel(changes.name.from)
+    }
+
     const labels = await getLabelsMatching(name)
 
     const labelChanges: LabelChangeset = {
@@ -25,6 +38,13 @@ export const syncReposHandler: SyncReposHandler = async ({
     }
 
     await updateLabels(labels, labelChanges)
+    const newLabelUnlock = unlockLabel(label.name)
+
+    if (typeof changes.name?.from === 'string') {
+      await Promise.all([newLabelUnlock, unlockLabel(changes.name.from)])
+    } else {
+      await newLabelUnlock
+    }
   }
 
   if (action === 'created') {
@@ -39,6 +59,7 @@ export const syncReposHandler: SyncReposHandler = async ({
       color,
       description
     })
+    await unlockLabel(name)
   }
 
   if (action === 'deleted') {
@@ -47,5 +68,6 @@ export const syncReposHandler: SyncReposHandler = async ({
     )
 
     await deleteLabels(labelsToDelete)
+    await unlockLabel(label.name)
   }
 }

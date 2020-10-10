@@ -21,3 +21,5 @@ export const githubApiToken = getEssentialEnvVar('GITHUB_API_TOKEN')
 export const githubOrg = getEssentialEnvVar('GITHUB_ORGANIZATION')
 
 export const webhookSecret = getEssentialEnvVar('WEBHOOK_SECRET')
+
+export const labelsTable = getEssentialEnvVar('LABELS_TABLE')

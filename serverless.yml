@@ -39,12 +39,20 @@ provider:
   name: aws
   runtime: nodejs12.x
   environment:
+    LABELS_TABLE: '${self:service}-${self:provider.stage}-labels'
     SYNC_REPOS_FUNCTION_NAME: ${self:custom.syncReposFunctionName}
   iamRoleStatements:
     - Effect: Allow
       Action:
         - lambda:InvokeFunction
       Resource: 'arn:aws:lambda:*:*:function:${self:custom.syncReposFunctionName}'
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+      Resource: 'arn:aws:dynamodb:*:*:table/${self:provider.environment.LABELS_TABLE}'
 # you can overwrite defaults here
 #  stage: dev
 #  region: us-east-1
@@ -127,13 +135,19 @@ functions:
 #    environment:
 #      variable2: value2
 
-# you can add CloudFormation resource templates here
-#resources:
-#  Resources:
-#    NewResource:
-#      Type: AWS::S3::Bucket
-#      Properties:
-#        BucketName: my-new-bucket
+resources:
+  Resources:
+    LabelsDynamoDbTable:
+      Type: 'AWS::DynamoDB::Table'
+      Properties:
+        TableName: ${self:provider.environment.LABELS_TABLE}
+        BillingMode: 'PAY_PER_REQUEST'
+        AttributeDefinitions:
+          - AttributeName: "name"
+            AttributeType: "S"
+        KeySchema:
+          - AttributeName: "name"
+            KeyType: "HASH"
 #  Outputs:
 #     NewOutput:
 #       Description: "Description for the output"
