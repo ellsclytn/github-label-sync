@@ -31,6 +31,11 @@ provider:
   runtime: nodejs12.x
   environment:
     SYNC_REPOS_FUNCTION_NAME: ${self:custom.syncReposFunctionName}
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - lambda:InvokeFunction
+      Resource: 'arn:aws:lambda:*:*:function:${self:custom.syncReposFunctionName}'
 # you can overwrite defaults here
 #  stage: dev
 #  region: us-east-1
