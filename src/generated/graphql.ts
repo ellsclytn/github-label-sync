@@ -18768,6 +18768,17 @@ export type CreateLabelsMutation = (
   )> }
 );
 
+export type DeleteLabelsMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type DeleteLabelsMutation = (
+  { readonly __typename?: 'Mutation' }
+  & { readonly labelDelete1: Maybe<(
+    { readonly __typename?: 'DeleteLabelPayload' }
+    & Pick<DeleteLabelPayload, 'clientMutationId'>
+  )> }
+);
+
 export type GetLabelsMatchingQueryVariables = Exact<{
   after: Maybe<Scalars['String']>;
   org: Scalars['String'];

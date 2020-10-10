@@ -1,9 +1,10 @@
 import { Handler } from 'aws-lambda'
 import { LabelChangeset, updateLabels } from '../github/update-labels'
 import { WebhookPayloadLabel } from '../webhook-listeners/label'
+import { createLabels } from '../github/create-labels'
+import { deleteLabels } from '../github/delete-labels'
 import { getLabelsMatching } from '../github/get-labels-matching'
 import { getRepositories } from '../github/get-repositories'
-import { createLabels } from '../github/create-labels'
 
 type SyncReposHandler = Handler<WebhookPayloadLabel>;
 
@@ -38,5 +39,13 @@ export const syncReposHandler: SyncReposHandler = async ({
       color,
       description
     })
+  }
+
+  if (action === 'deleted') {
+    const labelsToDelete = await getLabelsMatching(label.name).then((labels) =>
+      labels.filter((l) => label.node_id !== l)
+    )
+
+    await deleteLabels(labelsToDelete)
   }
 }
