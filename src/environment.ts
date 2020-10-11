@@ -22,4 +22,4 @@ export const githubOrg = getEssentialEnvVar('GITHUB_ORGANIZATION')
 
 export const webhookSecret = getEssentialEnvVar('WEBHOOK_SECRET')
 
-export const labelsTable = getEssentialEnvVar('LABELS_TABLE')
+export const labelLocksTable = getEssentialEnvVar('LABEL_LOCKS_TABLE')

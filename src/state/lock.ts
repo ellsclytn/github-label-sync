@@ -1,6 +1,6 @@
 import { LockError } from './errors'
 import { docClient } from './client'
-import { labelsTable } from '../environment'
+import { labelLocksTable } from '../environment'
 
 /** Lock period (seconds) before an entry is considered unlocked again */
 const LOCK_TIMEOUT = 60
@@ -8,7 +8,7 @@ const LOCK_TIMEOUT = 60
 export const lockLabel = async (label: string): Promise<void> => {
   const isLockInPlace = await docClient
     .get({
-      TableName: labelsTable,
+      TableName: labelLocksTable,
       Key: {
         name: label
       }
@@ -24,7 +24,7 @@ export const lockLabel = async (label: string): Promise<void> => {
 
   await docClient
     .put({
-      TableName: labelsTable,
+      TableName: labelLocksTable,
       Item: {
         name: label,
         lockedAt: new Date().getTime()
@@ -36,7 +36,7 @@ export const lockLabel = async (label: string): Promise<void> => {
 export const unlockLabel = async (label: string): Promise<void> => {
   await docClient
     .put({
-      TableName: labelsTable,
+      TableName: labelLocksTable,
       Item: {
         name: label,
         lockedAt: null

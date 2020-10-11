@@ -10,7 +10,7 @@ module.exports = {
       }
     }
   ],
-  documents: 'src/**/query.ts',
+  documents: 'src/**/{query,fragments}.ts',
   generates: {
     'src/generated/graphql.ts': {
       plugins: ['typescript', 'typescript-operations'],

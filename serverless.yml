@@ -39,6 +39,7 @@ provider:
   name: aws
   runtime: nodejs12.x
   environment:
+    LABEL_LOCKS_TABLE: '${self:service}-${self:provider.stage}-label-locks'
     LABELS_TABLE: '${self:service}-${self:provider.stage}-labels'
     SYNC_REPOS_FUNCTION_NAME: ${self:custom.syncReposFunctionName}
   iamRoleStatements:
@@ -46,6 +47,13 @@ provider:
       Action:
         - lambda:InvokeFunction
       Resource: 'arn:aws:lambda:*:*:function:${self:custom.syncReposFunctionName}'
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+      Resource: 'arn:aws:dynamodb:*:*:table/${self:provider.environment.LABEL_LOCKS_TABLE}'
     - Effect: Allow
       Action:
         - dynamodb:Query
@@ -141,6 +149,21 @@ resources:
       Type: 'AWS::DynamoDB::Table'
       Properties:
         TableName: ${self:provider.environment.LABELS_TABLE}
+        BillingMode: 'PAY_PER_REQUEST'
+        AttributeDefinitions:
+          - AttributeName: "name"
+            AttributeType: "S"
+          - AttributeName: "repoId"
+            AttributeType: "S"
+        KeySchema:
+          - AttributeName: "name"
+            KeyType: "HASH"
+          - AttributeName: "repoId"
+            KeyType: "RANGE"
+    LabelLocksDynamoDbTable:
+      Type: 'AWS::DynamoDB::Table'
+      Properties:
+        TableName: ${self:provider.environment.LABEL_LOCKS_TABLE}
         BillingMode: 'PAY_PER_REQUEST'
         AttributeDefinitions:
           - AttributeName: "name"
